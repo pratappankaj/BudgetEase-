@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Expense | Money Manager</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Background Animation -->
+  <div class="background-animation"></div>
+
+  <div class="container">
+    <h1>Add Expense 💸</h1>
+
+    <div class="form-group">
+      <input type="text" id="description" placeholder="Description" required>
+      <input type="number" id="amount" placeholder="Amount (₹)" required>
+
+      <select id="category">
+        <option disabled selected>Select Category</option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <input type="date" id="date" required>
+
+      <button id="addExpenseBtn">Add Expense</button>
+    </div>
+
+    <div class="filter-group">
+      <label>Start Date:</label>
+      <input type="date" id="startDate">
+      <label>End Date:</label>
+      <input type="date" id="endDate">
+      <button onclick="filterExpenses()">Filter</button>
+      <button onclick="clearFilter()">Clear Filter</button>
+    </div>
+
+    <h3>Today's Total: ₹<span id="todayTotal">0.00</span></h3>
+    <h3>Monthly Total: ₹<span id="monthTotal">0.00</span></h3>
+
+    <canvas id="chart" width="400" height="200"></canvas>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Amount (₹)</th>
+          <th>Category</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="expenseList"></tbody>
+    </table>
+
+    <!-- Back Button -->
+    <a href="dashboard.html" class="add-expense-btn" style="margin-top: 20px; display: inline-block;">← Back to Dashboard</a>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+

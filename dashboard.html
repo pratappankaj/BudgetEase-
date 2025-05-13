@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Money Manager</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Add these extra styles */
+    .warning-message {
+      background-color: #ffcccc;
+      color: #a94442;
+      padding: 10px;
+      margin-top: 15px;
+      border: 1px solid #a94442;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+      display: none;
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    .progress-container {
+      margin-top: 20px;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      height: 25px;
+    }
+    .progress {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      text-align: center;
+      line-height: 25px;
+      color: white;
+      border-radius: 20px;
+      transition: width 1s ease;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Animation -->
+  <div class="background-animation"></div>
+
+  <div class="dashboard-container">
+    <h1>Welcome to Your Dashboard💼</h1>
+    <p class="tagline">Manage your expenses and budget efficiently!</p>
+
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>Total Balance</h3>
+        <p id="totalBalance">₹0</p>
+        <button onclick="editBalance()" class="edit-btn">✏️ Edit Balance</button>
+      </div>
+      <div class="card">
+        <h3>Expenses</h3>
+        <p id="expenses">₹0</p>
+      </div>
+      <div class="card">
+        <h3>Remaining Budget</h3>
+        <p id="remainingBudget">₹0</p>
+      </div>
+    </div>
+
+    <!-- Progress Bars Section -->
+    <div class="progress-container">
+      <h3>Budget Spent</h3>
+      <div class="progress-bar">
+        <div id="spentProgress" class="progress">0%</div>
+      </div>
+    </div>
+
+    <!-- Warning Message -->
+    <div id="warningMessage" class="warning-message">
+      ⚠️ You went over the budget!
+    </div>
+
+    <!-- Button to Add Expense -->
+    <a href="newaddexpense.html" class="add-expense-btn">➕ Add Expense</a>
+  </div>
+
+  <script>
+    function loadDashboard() {
+      const totalBalance = parseFloat(localStorage.getItem('totalBalance')) || 0;
+      const expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+
+      const month = new Date().toISOString().slice(0, 7);
+      let monthlyExpenses = expenses
+        .filter(exp => exp.date && exp.date.startsWith(month))
+        .reduce((sum, exp) => sum + parseFloat(exp.amount), 0);
+
+      document.getElementById('totalBalance').innerText = `₹${totalBalance.toFixed(2)}`;
+      document.getElementById('expenses').innerText = `₹${monthlyExpenses.toFixed(2)}`;
+
+      const remaining = totalBalance - monthlyExpenses;
+      document.getElementById('remainingBudget').innerText = `₹${remaining.toFixed(2)}`;
+
+      // Show warning if budget is negative
+      const warningMessage = document.getElementById('warningMessage');
+      if (remaining < 0) {
+        warningMessage.style.display = 'block';
+      } else {
+        warningMessage.style.display = 'none';
+      }
+
+      // Animate Progress Bar
+      const spentPercent = totalBalance > 0 ? (monthlyExpenses / totalBalance) * 100 : 0;
+      const progress = document.getElementById('spentProgress');
+      progress.style.width = Math.min(spentPercent, 100) + '%';
+      progress.innerText = Math.min(spentPercent, 100).toFixed(0) + '%';
+
+      // Change color if above 80% spent
+      if (spentPercent > 80) {
+        progress.style.backgroundColor = '#f44336'; // Red
+      } else if (spentPercent > 50) {
+        progress.style.backgroundColor = '#ff9800'; // Orange
+      } else {
+        progress.style.backgroundColor = '#4caf50'; // Green
+      }
+    }
+
+    function editBalance() {
+      let newBalance = prompt("Enter your Total Balance:");
+      if (newBalance !== null && !isNaN(newBalance) && newBalance >= 0) {
+        localStorage.setItem('totalBalance', newBalance);
+        loadDashboard();
+      } else {
+        alert("Please enter a valid number.");
+      }
+    }
+
+    // Load on page open
+    loadDashboard();
+  </script>
+
+</body>
+</html>
+
+
